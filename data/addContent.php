@@ -21,22 +21,57 @@ $orm = new Orm($connect, "POSTS");
 
 $postsBd = $orm->getList();
 if(count($postsBd["body"]) === 0) {
-    $orm->addPosts($posts["body"]);
+    $addPosts = $orm->addPosts($posts["body"]);
+
+    $countPost = $addPosts["body"];
 }
 else {
-    $titlesPostsBd = array_column($postsBd["body"], 'TITLE');
+    $titlesPostsBd = array_column($postsBd["body"], "TITLE");
 
     $result = array_filter($posts["body"], function($item) use ($titlesPostsBd) {
-        return !in_array($item['title'], $titlesPostsBd);
+        return !in_array($item["title"], $titlesPostsBd);
     });
 
     if(count($result) !== 0) {
-        $orm->addPosts($result);
+        $addPosts = $orm->addPosts($result);
 
-        $countPost = count($result);
+        if($addPosts["code"] !== 1) {
+            die($addPosts["message"]);
+        }
+
+        $countPost = $addPosts["body"];
     }
 }
 
+$comments = $cron->get("https://jsonplaceholder.typicode.com/comments");
+if($comments["code"] === 404) {
+    die($comments["message"]);
+}
 
+$orm = new Orm($connect, "COMMENTS");
 
-//$comments = $cron->get("https://jsonplaceholder.typicode.com/comments");
+$commentsBd = $orm->getList();
+if(count($commentsBd["body"]) === 0) {
+    $addComments = $orm->addComments($comments["body"]);
+
+    $countComment = $addComments["body"];
+}
+else {
+    $titlesCommentsBd = array_column($commentsBd["body"], "NAME");
+
+    $result = array_filter($comments["body"], function($item) use ($titlesCommentsBd) {
+        return !in_array($item["name"], $titlesCommentsBd);
+    });
+
+    if(count($result) !== 0) {
+        $addComments = $orm->addComments($result);
+
+        if($addComments["code"] !== 1) {
+            die($addComments["message"]);
+        }
+
+        $countComment = $addComments["body"];
+    }
+}
+
+echo "Загружено $countPost записей и $countComment комментариев";
