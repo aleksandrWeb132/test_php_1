@@ -46,8 +46,6 @@ class Orm {
         try {
             $sql = "INSERT INTO $this->table (USER_ID, TITLE, BODY) VALUES (:userId, :title, :body)";
 
-            $this->connect->setAttribute($this->connect::ATTR_ERRMODE, $this->connect::ERRMODE_EXCEPTION);
-
             $stmt = $this->connect->prepare($sql);
 
             foreach($posts as $post) {
@@ -68,6 +66,36 @@ class Orm {
             return [
                 "code" => 4473,
                 "message" => "Ошибка в запросе на добавление постов!",
+                "body" => $e->getMessage()
+            ];
+        }
+    }
+
+    public function addComments($comments): array {
+        try {
+            $sql = "INSERT INTO $this->table (POST_ID, NAME, EMAIL, BODY) VALUES (:postId, :name, :email, :body)";
+
+            $stmt = $this->connect->prepare($sql);
+
+            foreach ($comments as $comment) {
+                $stmt->execute([
+                    ':postId' => $comment['postId'],
+                    ':name' => $comment['name'],
+                    ':email' => $comment['email'],
+                    ':body' => $comment['body']
+                ]);
+            }
+
+            return [
+                "code" => 1,
+                "message" => "Успешно добавили коментарии!",
+                "body" => count($comments)
+            ];
+        }
+        catch (PDOException $e) {
+            return [
+                "code" => 4461,
+                "message" => "Ошибка в запросе на добавление коментариев!",
                 "body" => $e->getMessage()
             ];
         }
