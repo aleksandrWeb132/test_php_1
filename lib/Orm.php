@@ -14,7 +14,7 @@ class Orm {
     }
 
     /** Получить список всех записей **/
-    public function getList() {
+    public function getList(): array {
         try {
             $sql = "SELECT * FROM $this->table";
 
