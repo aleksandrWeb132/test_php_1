@@ -20,7 +20,7 @@ class Cron {
             return [
                 "code" => 1,
                 "message" => "Ответ от сервера",
-                "body" => $response
+                "body" => json_decode($response, true)
             ];
         }
     }
