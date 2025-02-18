@@ -1,7 +1,9 @@
 function searchPosts(url, body) {
     request(url, 'POST', body)
         .then(data => {
-            console.log(data);
+            if(data.code === 1) {
+                createRow(data.body);
+            }
         })
         .catch(error => {
             console.log(error);
@@ -11,11 +13,26 @@ function searchPosts(url, body) {
 function getPosts(url) {
     request(url, 'GET')
         .then(data => {
-            console.log(data);
+            if(data.code === 1) {
+                createRow(data.body);
+            }
         })
         .catch(error => {
             console.log(error);
         });
+}
+
+function createRow(posts) {
+    const tbody = document.getElementById('table-body');
+
+    tbody.innerHTML = '';
+
+    posts.forEach((post) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${post.ID}</td><td>${post.USER_ID}</td><td>${post.TITLE}</td><td>${post.BODY}</td>`;
+
+        tbody.appendChild(row);
+    })
 }
 
 async function request(url, method, body = undefined) {
