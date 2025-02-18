@@ -38,7 +38,25 @@ class Orm {
 
     /** Получить список записей по строке **/
     public function findByString($string) {
+        try {
+            $sql = "SELECT POSTS.* FROM POSTS JOIN COMMENTS ON POSTS.ID = COMMENTS.POST_ID WHERE COMMENTS.body LIKE'%$string%'";
 
+            $stmt = $this->connect->prepare($sql);
+            $stmt->execute();
+
+            return [
+                "code" => 1,
+                "message" => "Успешно получили посты в коментариях у которых есть (слово или символы) '$string'!",
+                "body" => $stmt->fetchAll($this->connect::FETCH_ASSOC)
+            ];
+        }
+        catch(PDOException $e) {
+            return [
+                "code" => 4437,
+                "message" => "Ошибка в запросе на поиск постов в коментарии у которых есть (слово или символы) '$string'!",
+                "body" => $e->getMessage()
+            ];
+        }
     }
 
     /** Добавить новые записи в таблицу **/
