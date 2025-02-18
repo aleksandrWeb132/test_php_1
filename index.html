@@ -21,10 +21,10 @@
         <div class="container">
             <div class="filter__content">
                 <label class="search__fon">
-                    <input class="search__input" id="search-input" type="text" placeholder="Найти посты: ">
+                    <input class="search__input" id="search-input" type="text" placeholder="Найти посты: " oninput="handleInput()">
                     <button class="search__delete" id="delete-input" type="button">✖</button>
                 </label>
-                <button class="update" id="update" type="button">Обновить посты</button>
+                <button class="update" id="update" type="button" onclick="getPosts('./data/get_posts.php')">Обновить посты</button>
             </div>
         </div>
     </section>
@@ -47,9 +47,26 @@
     </main>
     <script src="./js/main.js"></script>
     <script>
-        getPosts('http://timohin.h1n.ru/test_php_1/data/get_posts.php');
+        document.addEventListener('DOMContentLoaded', () => {
+            getPosts('./data/get_posts.php');
+        });
 
-        // searchPosts('http://timohin.h1n.ru/test_php_1/data/search_posts.php', {search: "laudanti"});
+        let timeoutId;
+
+        function handleInput() {
+            clearTimeout(timeoutId);
+
+            timeoutId = setTimeout(() => {
+                const inputField = document.getElementById('search-input');
+                const inputValue = inputField.value;
+
+                if (inputValue.length > 2) {
+                    searchPosts('./data/search_posts.php', {search: inputValue});
+
+                    inputField.value = '';
+                }
+            }, 2000);
+        }
     </script>
 </body>
 </html>
