@@ -10,4 +10,4 @@ $orm = new Orm($connect, "POSTS");
 
 $posts = $orm->getList();
 
-die($posts);
+die(json_encode($posts));
