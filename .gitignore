@@ -1,3 +1,5 @@
 /.idea/
 /logs/
-/config/
+config/*
+!config/.htaccess
+!config/config-example.php
