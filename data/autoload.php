@@ -7,6 +7,6 @@ spl_autoload_register(function ($class_name) {
         require_once $file;
     }
     else {
-        echo "Файл $file не найден.";
+        die("Файл $file не найден.");
     }
 });
